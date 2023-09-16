@@ -4,7 +4,7 @@ import "./App.css";
 
 const Map = () => {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyANnm5bgcQkrhUhbIuUkkvkcMeU8J_Rs2I",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
   const center = useMemo(() => ({ lat: 18.52043, lng: 73.856743 }), []);
 

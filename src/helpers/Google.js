@@ -1,5 +1,5 @@
 import axios from "axios";
-const querystring = require("querystring-es3");
+//const querystring = require("querystring-es3");
 
 export const getCurrentLocation = () => {
   return new Promise((resolve, reject) => {
