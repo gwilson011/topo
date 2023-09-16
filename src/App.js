@@ -1,5 +1,10 @@
 import logo from "./logo.svg";
 import "./App.css";
+<<<<<<< HEAD
+=======
+import Geo from "./Geo";
+//nice
+>>>>>>> add api & add helpers & update geo.js
 
 function App() {
   return (
