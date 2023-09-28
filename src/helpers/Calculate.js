@@ -1,3 +1,5 @@
+import { getDirectDistance } from "./Google";
+
 export function getArea(currentLoc, inputMileage) {
   console.log(currentLoc);
   let degPerMileLat = 1 / 69;
@@ -25,6 +27,45 @@ export function areaUnderCurve(points) {
   }
   return area;
 }
+
+export const simplify = async (nodeList) => {
+  console.log("simplifying...");
+  const clusters = [];
+  const nodeListCopy = nodeList.slice();
+  //identify nodes that are close together
+  for (let i in nodeListCopy) {
+    const clusterList = [];
+    const node = nodeListCopy.pop();
+    if (node === undefined) continue;
+    clusterList.push(node);
+    //console.log("checking .... ", node.id);
+    //console.log(nodeListCopy.length);
+    for (let x in nodeListCopy) {
+      if (node === nodeListCopy[x] || nodeListCopy[x] === undefined) continue;
+      console.log(node, nodeListCopy[x]);
+      let distance = getDirectDistance(node, nodeListCopy[x]);
+      //console.log(distance);
+      if (parseFloat(distance) < 50) {
+        console.log("close");
+        clusterList.push(nodeListCopy[x]);
+        nodeListCopy[x] = undefined;
+      }
+    }
+    if (clusterList.length > 1) clusters.push(clusterList);
+  }
+  //remove redundant nodes
+  let originalLength = nodeList.length;
+  for (let i in clusters) {
+    //exclude the first node, remove the rest
+    for (let x = 1; x <= clusters[i].length - 1; x++) {
+      //console.log(clusters[i][x]);
+      //console.log(nodeList.indexOf(clusters[i][x]));
+      nodeList.splice(nodeList.indexOf(clusters[i][x]), 1);
+    }
+  }
+  console.log("removed ", originalLength - nodeList.length, " redundant nodes");
+  return nodeList;
+};
 
 export function commonElementsWithOrder(arr1, arr2) {
   // Create a Set from arr2 for efficient lookups

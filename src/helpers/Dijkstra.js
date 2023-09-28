@@ -135,6 +135,7 @@ export class WeightedGraph {
     let smallest;
     let distances = {};
     let done = false;
+    let smallestDistance;
 
     //build up initial state
     for (let vertex in this.edgeList) {
@@ -155,15 +156,17 @@ export class WeightedGraph {
     // as long as there is something to visit
     while (nodes.values.length) {
       smallest = nodes.dequeue().val;
-      console.log(distances);
-      for (let i in distances) {
-        console.log(distances[i], this.inputDistance);
-        if (distances[i] >= this.inputDistance && distances[i] !== Infinity) {
-          done = true; //todo: one more iteration
-        }
-      }
 
-      if (done) {
+      console.log(smallest);
+      smallestDistance = distances[smallest];
+      if (smallestDistance >= this.inputDistance) {
+        // for (let i in distances) {
+        //   console.log(distances[i], this.inputDistance);
+        //   if (distances[i] >= this.inputDistance && distances[i] !== Infinity) {
+        //     done = true; //todo: one more iteration
+        //   }
+        // }
+
         //WE ARE DONE
         //BUILD UP PATH TO RETURN AT END
         while (previous[smallest]) {
@@ -178,6 +181,11 @@ export class WeightedGraph {
         for (let neighbor in this.edgeList[smallest]) {
           //find neighboring node
           let nextNode = this.edgeList[smallest][neighbor];
+          //see if node will exceed the distance parameter
+          // if (smallestDistance + nextNode.distance > this.inputDistance) {
+          //   done = true;
+          //   continue;
+          // }
           //calculate new distance to neighboring node
           let candidate = elevations[smallest] + nextNode.weight;
           let nextNeighbor = nextNode.node;

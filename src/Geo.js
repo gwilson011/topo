@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import "./helpers/Dijkstra";
 import { WeightedGraph, testAlg } from "./helpers/Dijkstra";
-import { getArea, toMeters, areaUnderCurve } from "./helpers/Calculate";
-import { retrievePath } from "./helpers/BuildMap";
+import {
+  getArea,
+  toMeters,
+  areaUnderCurve,
+  simplify,
+} from "./helpers/Calculate";
+import { retrievePath, breakDown } from "./helpers/BuildMap";
 import { queryIntersections } from "./helpers/OSM";
 import {
   getCurrentLocation,
@@ -14,7 +19,10 @@ import {
 const Geo = () => {
   const [distanceState, setDistanceState] = useState("");
   const [map, setMap] = useState(new WeightedGraph(null));
+  const [nodeMap, setNodeMap] = useState();
   const [startLoc, setStartLoc] = useState();
+  const [array, setArray] = useState(null);
+
   const onPress = async () => {
     let cl, intersectionData;
     // try {
@@ -29,22 +37,37 @@ const Geo = () => {
     } catch (error) {
       console.error(error.message);
     }
-    setMap(
-      await retrievePath(
-        cl,
-        intersectionData.elements,
-        parseFloat(distanceState)
-      )
-    );
 
+    let nodeList = await simplify(intersectionData.elements);
+
+    const { wMap, nMap } = {};
+
+    try {
+      await retrievePath(cl, nodeList, parseFloat(distanceState));
+    } catch (error) {
+      console.error(error.message);
+    }
+
+    console.log("results: ", wMap, nMap);
+    setMap(wMap);
+    setNodeMap(nMap);
     setStartLoc(cl);
+    console.log("hello??");
   };
 
   const startAlgorithm = async () => {
     const start = "100000000";
-    console.log(map);
-    console.log(map.modifiedDijsktra(start));
+    console.log(nodeMap);
+    const test = map.modifiedDijsktra(start);
+    console.log(test);
+    setArray(test);
+
     //console.log(await testAlg());
+  };
+
+  const finish = async () => {
+    const copy = array.slice();
+    breakDown(distanceState, copy);
   };
 
   const handleInputChange = (e) => {
@@ -64,6 +87,9 @@ const Geo = () => {
         placeholder="Enter distance in meters"
       />
       <button onClick={startAlgorithm}>algorize</button>
+      <div>
+        <button onClick={finish}>finish</button>
+      </div>
     </div>
   );
 };

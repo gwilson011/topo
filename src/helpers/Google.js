@@ -1,4 +1,5 @@
 import axios from "axios";
+const google = window.google;
 //const querystring = require("querystring-es3");
 
 export const getCurrentLocation = () => {
@@ -25,7 +26,6 @@ export const getCurrentLocation = () => {
 
 export const getDistanceBetween = (first, second) => {
   console.log("fetching distance...");
-  console.log("key", process.env.REACT_APP_GOOGLE_API_KEY);
   const origin = first.lat + "," + first.lng;
   const destination = second.lat + "," + second.lng;
   const baseUrl = "http://localhost:8080/directions";
@@ -38,13 +38,23 @@ export const getDistanceBetween = (first, second) => {
     axios
       .get(baseUrl, { params })
       .then((response) => {
-        console.log(process.env.GOOGLE_API_KEY);
-        console.log(response.data);
+        console.log(response);
         const dist = response.data.routes[0].legs[0].distance.text;
+        const encodedPath = response.data.routes[0].overview_polyline.points;
         if (dist.match(/ft/g)) {
-          resolve(parseFloat(dist.match(/[0-9]+/g)[0] / 5280));
+          const returnObj = {
+            distance: parseFloat(dist.match(/[0-9]+/g)[0] / 5280),
+            path: decodePath(encodedPath),
+            steps: response.data.routes[0].legs[0].steps,
+          };
+          resolve(returnObj);
         } else {
-          resolve(parseFloat(dist.match(/(\d+\.\d+)/g)[0]));
+          const returnObj = {
+            distance: parseFloat(dist.match(/(\d+\.\d+)/g)[0]),
+            path: decodePath(encodedPath),
+            steps: response.data.routes[0].legs[0].steps,
+          };
+          resolve(returnObj);
         }
       })
       .catch((error) => {
@@ -52,6 +62,25 @@ export const getDistanceBetween = (first, second) => {
       });
   });
 };
+
+function decodePath(path) {
+  return google.maps.geometry.encoding.decodePath(path);
+}
+
+export function getDirectDistance(source, destination) {
+  //console.log(source, destination);
+  if (source.lon !== undefined) {
+    return google.maps.geometry.spherical.computeDistanceBetween(
+      new google.maps.LatLng(source.lat, source.lon),
+      new google.maps.LatLng(destination.lat, destination.lon)
+    );
+  } else if (source.lng !== undefined) {
+    return google.maps.geometry.spherical.computeDistanceBetween(
+      new google.maps.LatLng(source.lat, source.lng),
+      new google.maps.LatLng(destination.lat, destination.lng)
+    );
+  }
+}
 
 export const getElevationBetween = (first, second) => {
   console.log("fetching elevation...");
