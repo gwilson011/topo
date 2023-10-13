@@ -1,16 +1,22 @@
 import { getNodesOnWayOf } from "./OSM";
 import { WeightedGraph } from "./Dijkstra";
 import { getDistanceBetween, getElevationBetween, getDistance } from "./Google";
-import { areaUnderCurve, commonElementsWithOrder } from "./Calculate";
+import { areaUnderCurve, commonElementsWithOrder, toMeters } from "./Calculate";
 
-let masterNodeList = new Map();
+//let masterNodeList;
 const google = window.google;
 let startNodeID = 100000000;
 
-export const retrievePath = async (cl, intersectionNodes, inputDistance) => {
+export const retrievePath = async (
+  cl,
+  intersectionNodes,
+  inputDistance,
+  masterNode
+) => {
   console.log("retrieving...");
   console.log(intersectionNodes);
   const nodeIDs = [];
+  const masterNodeList = masterNode;
 
   //clean intersection, eliminating nodes close together
 
@@ -30,9 +36,11 @@ export const retrievePath = async (cl, intersectionNodes, inputDistance) => {
       lng: intersectionNodes[i].lon,
     });
   }
-  console.log(masterNodeList);
-  const graph = buildRoadWay(cl, nodeIDs, inputDistance);
-  return graph, masterNodeList;
+  return new Promise((resolve, reject) => {
+    //console.log(masterNodeList);
+    const graph = buildRoadWay(cl, nodeIDs, inputDistance, masterNodeList);
+    resolve(graph);
+  });
 };
 
 function excise(elements) {
@@ -48,7 +56,7 @@ function excise(elements) {
   return wayList;
 }
 
-const buildRoadWay = async (start, nodeList, inputDistance) => {
+const buildRoadWay = async (start, nodeList, inputDistance, masterNodeList) => {
   console.log(nodeList);
   //start with node
   //if yes, link together in order???????
@@ -62,7 +70,6 @@ const buildRoadWay = async (start, nodeList, inputDistance) => {
   //connect vertices based on map data
   for (let i in nodeList) {
     let vertex1 = nodeList[i];
-    //console.log(vertex1);
     const coord1 = masterNodeList.get(vertex1);
 
     //check distance and elevation
@@ -123,18 +130,35 @@ const buildRoadWay = async (start, nodeList, inputDistance) => {
   graph.cleanEdges();
   //console.log(graph);
   //console.log(nodeList);
-  return graph, masterNodeList;
+  return graph;
 };
 
-export const breakDown = async (inputDistance, pathArray) => {
+export const breakDown = async (inputDistance, pathArray, masterNodeList) => {
   console.log(pathArray);
   const vertex2 = pathArray.pop();
   const vertex1 = pathArray.pop();
   console.log(parseInt(vertex1), vertex2);
   console.log(masterNodeList);
-  const { steps } = await getDistanceBetween(
+  const { distance, steps, end } = await getDistanceBetween(
     masterNodeList.get(parseInt(vertex1)),
     masterNodeList.get(vertex2)
   );
-  console.log(steps);
+  return new Promise((resolve, reject) => {
+    if (distance === parseFloat(inputDistance)) {
+      resolve(end);
+    }
+    let totalDistance = 0;
+    let coords;
+    const max = toMeters(inputDistance);
+    for (let i = 0; i < steps.length; i++) {
+      console.log(totalDistance);
+      if (totalDistance >= max - 80) {
+        coords = steps[i].start_location;
+        resolve(coords);
+      } else {
+        totalDistance = totalDistance + steps[i].distance.value;
+      }
+    }
+    resolve(steps[steps.length - 1].start_location);
+  });
 };

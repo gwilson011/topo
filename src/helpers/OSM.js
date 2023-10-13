@@ -50,3 +50,28 @@ export const getNodesOnWayOf = async (nodeID) => {
       .catch(console.error);
   });
 };
+
+export const queryWays = async (cl, rad) => {
+  return new Promise((resolve, reject) => {
+    console.log("querying ways for ", cl, " at radius ", rad, "...");
+    axios
+      .post(
+        "https://overpass-api.de/api/interpreter",
+        querystring.stringify({
+          data:
+            "[out:json];(way(around:" +
+            rad +
+            "," +
+            cl.lat +
+            "," +
+            cl.lng +
+            ")[highway];);out geom;",
+        })
+      )
+      .then((response) => {
+        //console.log(JSON.stringify(response.data));
+        resolve(response.data.elements);
+      })
+      .catch(console.error);
+  });
+};

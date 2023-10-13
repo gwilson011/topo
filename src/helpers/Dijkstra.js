@@ -1,3 +1,5 @@
+import { toMeters } from "./Calculate";
+
 class Node {
   constructor(val, priority) {
     this.val = val;
@@ -104,7 +106,7 @@ class PriorityQueue {
 export class WeightedGraph {
   constructor(dist) {
     this.edgeList = {};
-    this.inputDistance = dist;
+    this.inputDistance = toMeters(dist);
   }
   setInputDistance(dist) {
     this.inputDistance = dist;
@@ -117,6 +119,20 @@ export class WeightedGraph {
   addVertex(vertex) {
     if (!this.edgeList[vertex]) this.edgeList[vertex] = [];
   }
+  setEdgeDistance(vertex1, vertex2, dist) {
+    for (let i in this.edgeList[vertex1]) {
+      if (this.edgeList[vertex1][i].node === vertex2) {
+        this.edgeList[vertex1][i].distance = dist;
+      }
+    }
+  }
+  setEdgeWeight(vertex1, vertex2, w) {
+    for (let i in this.edgeList[vertex1]) {
+      if (this.edgeList[vertex1][i].node === vertex2) {
+        this.edgeList[vertex1][i].weight = w;
+      }
+    }
+  }
   addEdge(vertex1, vertex2, weight, distance) {
     let exists = false;
     for (let i in this.edgeList[vertex1]) {
@@ -127,6 +143,9 @@ export class WeightedGraph {
       this.edgeList[vertex2].push({ node: vertex1, weight, distance });
     }
   }
+  getEdges() {
+    return this.edgeList;
+  }
   modifiedDijsktra(start) {
     const nodes = new PriorityQueue();
     const elevations = {};
@@ -136,6 +155,10 @@ export class WeightedGraph {
     let distances = {};
     let done = false;
     let smallestDistance;
+
+    console.log("finding path with least amout of elevation...");
+    console.log("input is ", this.inputDistance);
+    console.log(this.edgeList);
 
     //build up initial state
     for (let vertex in this.edgeList) {
@@ -151,7 +174,7 @@ export class WeightedGraph {
       }
       previous[vertex] = null;
     }
-    console.log(elevations, previous);
+    //console.log(elevations, previous);
 
     // as long as there is something to visit
     while (nodes.values.length) {
@@ -160,13 +183,9 @@ export class WeightedGraph {
       console.log(smallest);
       smallestDistance = distances[smallest];
       if (smallestDistance >= this.inputDistance) {
-        // for (let i in distances) {
-        //   console.log(distances[i], this.inputDistance);
-        //   if (distances[i] >= this.inputDistance && distances[i] !== Infinity) {
-        //     done = true; //todo: one more iteration
-        //   }
-        // }
-
+        console.log("p: ", previous);
+        console.log("d: ", distances);
+        console.log("e: ", elevations);
         //WE ARE DONE
         //BUILD UP PATH TO RETURN AT END
         while (previous[smallest]) {
@@ -181,11 +200,7 @@ export class WeightedGraph {
         for (let neighbor in this.edgeList[smallest]) {
           //find neighboring node
           let nextNode = this.edgeList[smallest][neighbor];
-          //see if node will exceed the distance parameter
-          // if (smallestDistance + nextNode.distance > this.inputDistance) {
-          //   done = true;
-          //   continue;
-          // }
+
           //calculate new distance to neighboring node
           let candidate = elevations[smallest] + nextNode.weight;
           let nextNeighbor = nextNode.node;
@@ -208,7 +223,7 @@ export class WeightedGraph {
 
 export const testAlg = async (intersections) => {
   var graph = new WeightedGraph();
-  graph.setInputDistance(12);
+  graph.setInputDistance(4);
   graph.addVertex("A");
   graph.addVertex("B");
   graph.addVertex("C");

@@ -1,25 +1,18 @@
 import React, { useState } from "react";
 import "./helpers/Dijkstra";
 import { WeightedGraph, testAlg } from "./helpers/Dijkstra";
-import {
-  getArea,
-  toMeters,
-  areaUnderCurve,
-  simplify,
-} from "./helpers/Calculate";
+import { toMeters, simplify } from "./helpers/Calculate";
 import { retrievePath, breakDown } from "./helpers/BuildMap";
 import { queryIntersections } from "./helpers/OSM";
-import {
-  getCurrentLocation,
-  getDistanceBetween,
-  getElevationBetween,
-} from "./helpers/Google";
+import { GoogleMap, useLoadScript } from "@react-google-maps/api";
+import { useMemo } from "react";
+import { linkCoordinates } from "./helpers/CreateMap";
 
 //yes
 const Geo = () => {
   const [distanceState, setDistanceState] = useState("");
   const [map, setMap] = useState(new WeightedGraph(null));
-  const [nodeMap, setNodeMap] = useState();
+  const [nodeMap, setNodeMap] = useState(new Map());
   const [startLoc, setStartLoc] = useState();
   const [array, setArray] = useState(null);
 
@@ -30,34 +23,38 @@ const Geo = () => {
     // } catch (error) {
     //   console.error(error.message);
     // }
-    cl = { lat: 34.06439952753623, lng: -118.45143404981685 };
+    cl = { lat: 34.048014, lng: -118.526918 };
 
+    let graph;
     try {
-      intersectionData = await queryIntersections(cl, toMeters(distanceState));
+      graph = await linkCoordinates(cl, distanceState, nodeMap);
+      console.log(graph);
     } catch (error) {
       console.error(error.message);
     }
+    // let masterNodeMap = new Map();
+    // try {
+    //   graph = await retrievePath(
+    //     cl,
+    //     nodeList,
+    //     parseFloat(distanceState),
+    //     masterNodeMap
+    //   );
+    // } catch (error) {
+    //   console.error(error.message);
+    // }
 
-    let nodeList = await simplify(intersectionData.elements);
-
-    const { wMap, nMap } = {};
-
-    try {
-      await retrievePath(cl, nodeList, parseFloat(distanceState));
-    } catch (error) {
-      console.error(error.message);
-    }
-
-    console.log("results: ", wMap, nMap);
-    setMap(wMap);
-    setNodeMap(nMap);
-    setStartLoc(cl);
-    console.log("hello??");
+    console.log("results: ", graph);
+    setMap(graph);
+    console.log("map set");
+    // setNodeMap(masterNodeMap);
+    // setStartLoc(cl);
+    // console.log("hello??");
   };
 
   const startAlgorithm = async () => {
-    const start = "100000000";
-    console.log(nodeMap);
+    const start = 100000000;
+    console.log(map);
     const test = map.modifiedDijsktra(start);
     console.log(test);
     setArray(test);
@@ -67,13 +64,21 @@ const Geo = () => {
 
   const finish = async () => {
     const copy = array.slice();
-    breakDown(distanceState, copy);
+    const test = await breakDown(distanceState, copy, nodeMap);
+    console.log(test);
+  };
+
+  const mapReset = async () => {
+    const newMap = new Map();
+    setNodeMap(newMap);
+    console.log(nodeMap);
   };
 
   const handleInputChange = (e) => {
     const { value } = e.target;
     setDistanceState(value);
   };
+
   return (
     <div>
       <h1>geo</h1>
@@ -89,6 +94,9 @@ const Geo = () => {
       <button onClick={startAlgorithm}>algorize</button>
       <div>
         <button onClick={finish}>finish</button>
+      </div>
+      <div>
+        <button onClick={mapReset}>map reset</button>
       </div>
     </div>
   );
