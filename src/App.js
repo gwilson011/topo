@@ -37,9 +37,13 @@ function App() {
             setError("Invalid longitude and/or latitude");
             return;
         }
-        // if (parseFloat(distance) == submittedDistancce) {
-        //     return;
-        // }
+        if (parseFloat(distance) > 15) {
+            setError("Value exceeds 15");
+            return;
+        }
+        if (parseFloat(distance) == submittedDistancce) {
+            return;
+        }
         setLoading(true);
         if (selectedOption === "current") {
             try {
