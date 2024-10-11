@@ -1,70 +1,106 @@
-# Getting Started with Create React App
+# Topo
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Topo** is a web application that helps users find the optimal route with the least elevation gain for a specified distance radius. Whether planning a hike, bike ride, or walk, users can visualize the route on an interactive Google Map. The app supports input of either current location or custom coordinates for route calculation.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+-   **Elevation-Based Route Optimization**: Generate routes with minimal elevation gain using Google Maps' Directions and Elevation APIs.
+-   **Radius-Based Route Generation**: Create multiple routes that lie exactly on a specified radius from the starting location.
+-   **Customizable Start Point**: Choose between using your current location or entering custom coordinates.
+-   **Interactive Map**: View the route on an interactive Google Map.
 
-### `npm start`
+## Getting Started
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Prerequisites
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Make sure you have the following installed:
 
-### `npm test`
+-   Node.js (v14 or higher)
+-   npm (v6 or higher)
+-   A Google Maps API key (with the necessary APIs enabled: Directions, Elevation, and Maps JavaScript API)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Installation
 
-### `npm run build`
+1. Clone the repository:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    ```bash
+    git clone https://github.com/gwilson011/topo.git
+    cd topo
+    ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Install dependencies:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    ```bash
+    npm install
+    ```
 
-### `npm run eject`
+3. Create a `.env` file in the root directory and add your Google Maps API key:
+    ```
+    REACT_APP_GOOGLE_MAPS_API_KEY=your-google-maps-api-key
+    ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Usage
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+To start the development server, run:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+This will launch the app in development mode, accessible at `http://localhost:3000` in your browser.
 
-## Learn More
+### How It Works
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+-   **Route Calculation**: When users provide a distance radius and starting location (current or custom), the app calculates and displays points on the perimeter of the radius. It then determines the route that minimizes elevation gain.
+-   **Loading Screen**: A loading indicator will appear while the route calculation is in progress.
+-   **Multiple Routes**: The app can generate multiple routes for the user to choose from, prioritizing those with the least elevation gain.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Building for Production
 
-### Code Splitting
+To build the app for production:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+npm run build
+```
 
-### Analyzing the Bundle Size
+This will create a production-ready build in the `build` directory.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Testing
 
-### Making a Progressive Web App
+Run tests with:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```bash
+npm test
+```
 
-### Advanced Configuration
+## Folder Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+-   `src/components/Map.js`: Contains the interactive Google Map and logic for rendering routes based on input.
+-   `src/components/Distance.js`: Handles calculations related to distance,
 
-### Deployment
+## Contributing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Contributions are welcome! To contribute:
 
-### `npm run build` fails to minify
+1. Fork the repository.
+2. Create a feature branch:
+    ```bash
+    git checkout -b feature-name
+    ```
+3. Commit your changes:
+    ```bash
+    git commit -m 'Add new feature'
+    ```
+4. Push to the branch:
+    ```bash
+    git push origin feature-name
+    ```
+5. Open a pull request.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For any questions or issues, please open an issue in the repository or reach out via LinkedIn.
