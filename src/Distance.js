@@ -122,7 +122,14 @@ const DistanceBasedRoutes = ({
         }, 500); // delay by 0.5s
         setLoading(false);
         return () => clearTimeout(handler);
-    }, [maxDistanceMiles, setDirections, setElevation, setLoading]);
+    }, [
+        maxDistanceMiles,
+        setDirections,
+        setElevation,
+        setLoading,
+        NUMBER_OF_ROUTES,
+        center,
+    ]);
 
     return null; // This component does not render anything visually
 };

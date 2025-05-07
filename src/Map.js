@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import DistanceBasedRoutes from "./Distance";
 
@@ -9,10 +9,13 @@ export const Map = ({ setLoading, setRouteInfo, ...props }) => {
     const mapRef = useRef(null);
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-    const center = {
-        lat: props.start[0],
-        lng: props.start[1],
-    };
+    const center = useMemo(
+        () => ({
+            lat: props.start[0],
+            lng: props.start[1],
+        }),
+        [props.start]
+    );
 
     // Clears the previous directions from the map
     const clearDirections = () => {

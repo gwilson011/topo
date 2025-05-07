@@ -160,7 +160,7 @@ function App() {
                 </div>
             </div>
             {loading && (
-                <div className="absolute top-0 right-0 flex items-center justify-center bg-white bg-opacity-50 z-10 w-full lg:w-1/2 h-full">
+                <div className="absolute top-0 right-0 flex items-center justify-center bg-white bg-opacity-50 z-10 w-full h-full">
                     <span className="text-black text-xl"></span>
                     <img
                         className="opacity-50 w-[200px]"
