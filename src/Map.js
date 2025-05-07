@@ -4,7 +4,7 @@ import {
     LoadScript,
     DirectionsRenderer,
 } from "@react-google-maps/api";
-import DistanceBasedRoutes from "./Distance"; // Import the new component
+import DistanceBasedRoutes from "./Distance";
 
 export const Map = ({ setLoading, setRouteInfo, ...props }) => {
     const [directions, setDirections] = useState(null);
