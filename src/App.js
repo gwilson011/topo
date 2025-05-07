@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import { Map } from "./Map.js";
 import { useEffect, useState } from "react";
@@ -41,7 +40,7 @@ function App() {
             setError("Value exceeds 15");
             return;
         }
-        if (parseFloat(distance) == submittedDistancce) {
+        if (parseFloat(distance) === submittedDistancce) {
             return;
         }
         setLoading(true);
@@ -153,9 +152,9 @@ function App() {
                             </div>
                         )}
                         <div className="flex text-black text-center w-[280px]">
-                            It's simple. Enter the amount of miles you want to
-                            run. Get a route with minimal elevation gain. Up to
-                            15 miles.
+                            It's simple. Enter the straight-line distance you
+                            want to run. Get a route with minimal elevation
+                            gain. Up to 15 miles.
                         </div>
                     </div>
                 </div>

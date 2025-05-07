@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const DistanceBasedRoutes = ({
     center,
     maxDistanceMiles,
-    apiKey,
     setDirections,
     setLoading,
     setElevation,
@@ -12,15 +11,15 @@ const DistanceBasedRoutes = ({
     const milesToMeters = (miles) => miles * 1609.34;
 
     // Generate random lat/lng within a radius
-    const generateRandomPoint = (lat, lng, radius) => {
-        const radiusInDegrees = radius / 111320; // Convert radius from meters to degrees
-        const t = 2 * Math.PI * Math.random(); // Random angle in radians
-        const newLat = lat + radiusInDegrees * Math.cos(t); // Latitude at the radius distance
-        const newLng =
-            lng +
-            (radiusInDegrees * Math.sin(t)) / Math.cos(lat * (Math.PI / 180)); // Longitude adjusted for curvature
-        return { lat: newLat, lng: newLng };
-    };
+    // const generateRandomPoint = (lat, lng, radius) => {
+    //     const radiusInDegrees = radius / 111320; // Convert radius from meters to degrees
+    //     const t = 2 * Math.PI * Math.random(); // Random angle in radians
+    //     const newLat = lat + radiusInDegrees * Math.cos(t); // Latitude at the radius distance
+    //     const newLng =
+    //         lng +
+    //         (radiusInDegrees * Math.sin(t)) / Math.cos(lat * (Math.PI / 180)); // Longitude adjusted for curvature
+    //     return { lat: newLat, lng: newLng };
+    // };
 
     const generateEquidistantPoints = (lat, lng, radius, numPoints) => {
         const radiusInDegrees = radius / 111320; // Convert radius from meters to degrees
@@ -39,7 +38,12 @@ const DistanceBasedRoutes = ({
         return points;
     };
 
+    const hasRun = useRef(false);
+
     useEffect(() => {
+        if (hasRun.current || !window.google) return;
+        hasRun.current = true;
+
         if (window.google) {
             const directionsService =
                 new window.google.maps.DirectionsService();
@@ -128,7 +132,14 @@ const DistanceBasedRoutes = ({
             });
         }
         setLoading(false);
-    }, [maxDistanceMiles, setDirections]);
+    }, [
+        center,
+        maxDistanceMiles,
+        setDirections,
+        setElevation,
+        setLoading,
+        NUMBER_OF_ROUTES,
+    ]);
 
     return null; // This component does not render anything visually
 };

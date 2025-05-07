@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 export const RouteInfoBox = (props) => {
     console.log(props);
     return (

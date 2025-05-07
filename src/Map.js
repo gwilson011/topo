@@ -8,7 +8,7 @@ import DistanceBasedRoutes from "./Distance"; // Import the new component
 
 export const Map = ({ setLoading, setRouteInfo, ...props }) => {
     const [directions, setDirections] = useState(null);
-    const [map, setMap] = useState(null);
+    //const [map, setMap] = useState(null);
     const [elevation, setElevation] = useState();
 
     const apiKey = process.env.REACT_APP_GOOGLE_API;
@@ -32,7 +32,7 @@ export const Map = ({ setLoading, setRouteInfo, ...props }) => {
                 elevation: elevation,
             });
         }
-    }, [directions]);
+    }, [directions, elevation, setRouteInfo]);
 
     return (
         <LoadScript googleMapsApiKey={apiKey}>
@@ -40,7 +40,7 @@ export const Map = ({ setLoading, setRouteInfo, ...props }) => {
                 mapContainerStyle={mapContainerStyle}
                 center={center}
                 zoom={13}
-                onLoad={(mapInstance) => setMap(mapInstance)}
+                //onLoad={(mapInstance) => setMap(mapInstance)}
             >
                 {/* Render the DistanceBasedRoutes component to generate routes */}
                 {props.maxDistance && (
