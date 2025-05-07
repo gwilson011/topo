@@ -82,7 +82,7 @@ function App() {
             <div className="flex justify-center bg-white w-full lg:w-1/2 gap-4">
                 <div className="flex flex-col gap-3 justify-center">
                     <div className="flex justify-center w-auto">
-                        <h1 className="font-sans text-black text-5xl">TOPO</h1>
+                        <h1 className="font-tango text-black text-5xl">TOPO</h1>
                     </div>
                     <div className="flex flex-col gap-3">
                         <div className="flex justify-center gap-3">
@@ -103,7 +103,7 @@ function App() {
                         {selectedOption === "custom" && (
                             <div className="flex flex-row items-center gap-2">
                                 <label
-                                    className="font-sans text-black"
+                                    className="font-tango text-black"
                                     htmlFor="latitude"
                                 >
                                     LAT{" "}
@@ -116,7 +116,7 @@ function App() {
                                     onChange={(e) => handleLatChange(e)}
                                 />
                                 <label
-                                    className="font-sans text-black"
+                                    className="font-tango text-black"
                                     htmlFor="longitude"
                                 >
                                     LONG{" "}
@@ -140,7 +140,7 @@ function App() {
                                 placeholder="Enter distance in miles"
                             />
                             <button
-                                className="text-black bg-blue-300 rounded-sm px-3 font-sans"
+                                className="text-black bg-blue-300 rounded-sm px-3 font-tango"
                                 onClick={startAlgorithm}
                             >
                                 ROUTE

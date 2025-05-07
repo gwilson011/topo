@@ -4,7 +4,7 @@ module.exports = {
     theme: {
         extend: {},
         fontFamily: {
-            sans: ["TangoSans"],
+            tango: ["TangoSans", "sans-serif"],
         },
     },
     plugins: [],
