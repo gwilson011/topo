@@ -11,7 +11,7 @@ export const Map = ({ setLoading, setRouteInfo, ...props }) => {
     //const [map, setMap] = useState(null);
     const [elevation, setElevation] = useState();
 
-    const apiKey = process.env.REACT_APP_GOOGLE_API;
+    const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
     const mapContainerStyle = {
         width: "50%",
