@@ -78,8 +78,8 @@ function App() {
     }, [routeInfo]);
 
     return (
-        <div className="flex flex-row justify-between">
-            <div className="flex justify-center bg-white w-[50%] gap-4">
+        <div className="flex flex-col lg:flex-row justify-between gap-y-8 py-16 lg:py-0 lg:gap-y-0">
+            <div className="flex justify-center bg-white w-full lg:w-1/2 gap-4">
                 <div className="flex flex-col gap-3 justify-center">
                     <div className="flex justify-center w-auto">
                         <h1 className="font-sans text-black text-5xl">TOPO</h1>
@@ -160,7 +160,7 @@ function App() {
                 </div>
             </div>
             {loading && (
-                <div className="absolute top-0 right-0 flex items-center justify-center bg-white bg-opacity-50 z-10 w-[50%] h-full">
+                <div className="absolute top-0 right-0 flex items-center justify-center bg-white bg-opacity-50 z-10 w-full lg:w-1/2 h-full">
                     <span className="text-black text-xl"></span>
                     <img
                         className="opacity-50 w-[200px]"
@@ -176,7 +176,7 @@ function App() {
                 setRouteInfo={setRouteInfo}
             />
             {routeInfo && !loading && (
-                <div className="absolute top-0 right-0 flex items-left justify-left p-[10%] z-10 w-[50%]">
+                <div className="absolute top-0 right-0 flex items-start justify-start p-[10%] z-10 w-full lg:w-1/2">
                     <RouteInfoBox routeInfo={routeInfo} />
                 </div>
             )}

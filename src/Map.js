@@ -45,7 +45,7 @@ export const Map = ({ setLoading, setRouteInfo, ...props }) => {
     return (
         <LoadScript googleMapsApiKey={apiKey}>
             <GoogleMap
-                mapContainerStyle={{ width: "50%", height: "100vh" }}
+                mapContainerStyle={{ width: "100%", height: "100vh" }}
                 center={center}
                 zoom={13}
                 onLoad={(map) => {
