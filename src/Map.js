@@ -1,61 +1,66 @@
-import React, { useState, useEffect } from "react";
-import {
-    GoogleMap,
-    LoadScript,
-    DirectionsRenderer,
-} from "@react-google-maps/api";
+import React, { useState, useEffect, useRef } from "react";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import DistanceBasedRoutes from "./Distance";
 
 export const Map = ({ setLoading, setRouteInfo, ...props }) => {
-    const [directions, setDirections] = useState(null);
-    //const [map, setMap] = useState(null);
+    const [directionsData, setDirectionsData] = useState(null);
     const [elevation, setElevation] = useState();
-
+    const directionsRendererRef = useRef(null);
+    const mapRef = useRef(null);
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-    const mapContainerStyle = {
-        width: "50%",
-        height: "100vh",
+    const center = {
+        lat: props.start[0],
+        lng: props.start[1],
     };
 
-    const center = {
-        lat: props.start[0], // Example latitude (San Francisco)
-        lng: props.start[1], // Example longitude
+    // Clears the previous directions from the map
+    const clearDirections = () => {
+        if (directionsRendererRef.current) {
+            directionsRendererRef.current.setMap(null);
+            directionsRendererRef.current = null;
+        }
     };
 
     useEffect(() => {
-        if (directions) {
-            console.log(directions.routes[0].legs[0].distance.text);
+        clearDirections(); // Clear old polyline on new input
+        setDirectionsData(null);
+    }, [props.start, props.maxDistance]);
 
+    useEffect(() => {
+        if (directionsData && mapRef.current) {
+            const renderer = new window.google.maps.DirectionsRenderer();
+            renderer.setDirections(directionsData);
+            renderer.setMap(mapRef.current);
+            directionsRendererRef.current = renderer;
+
+            const leg = directionsData.routes[0].legs[0];
             setRouteInfo({
-                distance: directions.routes[0].legs[0].distance.text,
+                distance: leg.distance.text,
                 elevation: elevation,
             });
         }
-    }, [directions, elevation, setRouteInfo]);
+    }, [directionsData, elevation, setRouteInfo]);
 
     return (
         <LoadScript googleMapsApiKey={apiKey}>
             <GoogleMap
-                mapContainerStyle={mapContainerStyle}
+                mapContainerStyle={{ width: "50%", height: "100vh" }}
                 center={center}
                 zoom={13}
-                //onLoad={(mapInstance) => setMap(mapInstance)}
+                onLoad={(map) => {
+                    mapRef.current = map;
+                }}
             >
-                {/* Render the DistanceBasedRoutes component to generate routes */}
                 {props.maxDistance && (
                     <DistanceBasedRoutes
                         center={center}
                         maxDistanceMiles={props.maxDistance}
-                        apiKey={apiKey}
-                        setDirections={setDirections}
+                        setDirections={setDirectionsData}
                         setLoading={setLoading}
                         setElevation={setElevation}
                     />
                 )}
-
-                {/* Render the directions on the map */}
-                {directions && <DirectionsRenderer directions={directions} />}
             </GoogleMap>
         </LoadScript>
     );
